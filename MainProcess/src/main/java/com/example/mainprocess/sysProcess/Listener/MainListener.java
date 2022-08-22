@@ -6,9 +6,13 @@ import com.example.mainprocess.sysProcess.Event.CommandEvent;
 import com.example.mainprocess.sysProcess.Event.RequestDetectedEvent;
 import com.example.mainprocess.sysProcess.Event.ResponseEvent;
 import com.example.mainprocess.sysProcess.domain.ProcessRequest;
+import org.apache.commons.io.IOUtils;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.security.SecureRandom;
 
 /**
@@ -55,6 +59,8 @@ public class MainListener extends BaseListener {
         String responseJSON = JSON.toJSONString(responseEvent.getSource());
 
         //发送给子进程
+        PrintWriter out = new PrintWriter(getProcess().getOutputStream());
+        out.println(responseJSON);
     }
 
     /**
@@ -66,7 +72,7 @@ public class MainListener extends BaseListener {
         if (process.isAlive()) {
             process.destroy();
         }
-        //调用应用线程善后方法
+        //调用应用线程收尾方法
 
         System.exit(0);
     }

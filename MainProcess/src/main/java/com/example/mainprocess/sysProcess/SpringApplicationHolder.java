@@ -1,7 +1,9 @@
 package com.example.mainprocess.sysProcess;
 
+import com.alibaba.fastjson.JSON;
 import com.example.mainprocess.sysProcess.Event.BaseEvent;
-import com.example.mainprocess.sysProcess.Event.CommandEvent;
+import com.example.mainprocess.sysProcess.Event.ResponseEvent;
+import com.example.mainprocess.sysProcess.domain.ProcessResponse;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -23,5 +25,15 @@ public class SpringApplicationHolder implements ApplicationContextAware {
     public static void publishEvent(BaseEvent event)
     {
         applicationContext.publishEvent(event);
+    }
+
+    /**
+     * 发送错误响应
+     * @param e
+     */
+    public static void publishEvent(Exception e)
+    {
+        String response = JSON.toJSONString(ProcessResponse.error(e.getMessage()));
+        SpringApplicationHolder.publishEvent(new ResponseEvent(response));
     }
 }
